@@ -1,0 +1,25 @@
+.layout {
+  min-height: 100vh;
+  background: var(--c-bg);
+}
+
+.layout__main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout__content {
+  padding: var(--sp-6);
+  flex: 1;
+}
+
+@media (max-width: 860px) {
+  .layout__main {
+    margin-left: 0;
+  }
+  .layout__content {
+    padding: var(--sp-4);
+  }
+}

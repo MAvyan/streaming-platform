@@ -1,11 +1,24 @@
-/* Reset minimal — le style applicatif vit dans App.css */
-:root {
-  color-scheme: dark;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html,
 body,
 #root {
-  height: 100%;
   margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
 }
