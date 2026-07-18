@@ -1,0 +1,26 @@
+.footer {
+  padding: var(--sp-8) var(--page-x) var(--sp-7);
+  color: var(--c-text-dim);
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-5);
+  margin-bottom: var(--sp-4);
+}
+
+.footer__link {
+  color: var(--c-text-dim);
+  text-decoration: none;
+  font-size: var(--fs-sm);
+}
+.footer__link:hover {
+  text-decoration: underline;
+  color: var(--c-text-muted);
+}
+
+.footer__note {
+  font-size: var(--fs-xs);
+  margin: 0;
+}

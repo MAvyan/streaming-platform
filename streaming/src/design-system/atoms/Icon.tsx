@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 
 type IconName =
   | 'play'
+  | 'pause'
   | 'plus'
   | 'info'
   | 'search'
@@ -20,6 +21,7 @@ type Props = {
 
 const paths: Record<IconName, ReactElement> = {
   play: <path d="M5 3.5v17l14-8.5-14-8.5z" />,
+  pause: <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />,
   plus: <path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" />,
   info: (
     <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
