@@ -1,0 +1,60 @@
+name: lumen
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: lumen
+      POSTGRES_PASSWORD: lumen
+      POSTGRES_DB: lumen
+    ports:
+      - '5433:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U lumen']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://lumen:lumen@db:5432/lumen?schema=public
+      PORT: 4000
+    command: sh -c "npx prisma db push --skip-generate && npx prisma db seed && npm run dev"
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
+  streaming:
+    build: ./streaming
+    environment:
+      VITE_API_TARGET: http://backend:4000
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./streaming:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  admin:
+    build: ./admin
+    environment:
+      VITE_API_TARGET: http://backend:4000
+    ports:
+      - '5174:5174'
+    volumes:
+      - ./admin:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  db-data:

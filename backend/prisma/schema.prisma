@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  STANDARD
+  PREMIUM
+}
+
+model User {
+  id        String      @id @default(cuid())
+  email     String      @unique
+  name      String
+  plan      Plan        @default(FREE)
+  country   String
+  createdAt DateTime    @default(now())
+  views     ViewEvent[]
+}
+
+model Video {
+  id          String      @id @default(cuid())
+  title       String
+  description String
+  category    String
+  durationSec Int
+  releaseYear Int
+  thumbnailUrl String?
+  backdropUrl String?
+  maturity    String      @default("TP")
+  createdAt   DateTime    @default(now())
+  views       ViewEvent[]
+
+  @@index([category])
+}
+
+model ViewEvent {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  video      Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId    String
+  watchedSec Int
+  completed  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([videoId])
+  @@index([userId])
+  @@index([createdAt])
+}
