@@ -1,38 +1,82 @@
-import { useEffect, useState } from 'react'
+import { useStats } from './hooks/useStats'
+import { DashboardLayout } from './design-system/templates/DashboardLayout'
+import { KpiCard } from './design-system/molecules/KpiCard'
+import { ChartCard } from './design-system/molecules/ChartCard'
+import { LineChart } from './design-system/organisms/LineChart'
+import { BarChart } from './design-system/organisms/BarChart'
+import { DonutChart, type DonutDatum } from './design-system/organisms/DonutChart'
+import { TopVideosTable } from './design-system/organisms/TopVideosTable'
+import { compact, fullNumber } from './lib/format'
 import './App.css'
 
-type ApiStatus =
-  | { state: 'loading' }
-  | { state: 'ok'; service: string }
-  | { state: 'error'; message: string }
+const PLAN_META: Record<string, { label: string; color: string }> = {
+  FREE: { label: 'Gratuit', color: 'var(--series-1)' },
+  STANDARD: { label: 'Standard', color: 'var(--series-2)' },
+  PREMIUM: { label: 'Premium', color: 'var(--series-3)' },
+}
+const PLAN_ORDER = ['FREE', 'STANDARD', 'PREMIUM']
 
-/**
- * Squelette du Livrable 2 — dashboard d'administration.
- * Pour l'instant on vérifie surtout que le front est bien câblé au backend
- * (l'appel /api est relayé vers Express via le proxy Vite).
- */
 function App() {
-  const [api, setApi] = useState<ApiStatus>({ state: 'loading' })
+  const { data, loading, error } = useStats()
 
-  useEffect(() => {
-    fetch('/api/health')
-      .then((r) => r.json())
-      .then((data) => setApi({ state: 'ok', service: data.service ?? 'backend' }))
-      .catch((e) => setApi({ state: 'error', message: String(e) }))
-  }, [])
+  let body
+  if (error) {
+    body = <p className="dash__state">Statistiques indisponibles ({error}).</p>
+  } else if (loading || !data) {
+    body = <p className="dash__state">Chargement des statistiques…</p>
+  } else {
+    const { overview, byCategory, byPlan, topVideos, viewsOverTime } = data
+
+    const donut: DonutDatum[] = PLAN_ORDER.map((plan) => {
+      const found = byPlan.find((p) => p.plan === plan)
+      return {
+        label: PLAN_META[plan].label,
+        color: PLAN_META[plan].color,
+        value: found?.users ?? 0,
+      }
+    })
+
+    body = (
+      <div className="dash">
+        <div className="dash__kpis">
+          <KpiCard label="Abonnés" value={fullNumber(overview.totalUsers)} icon="users" delta={12.4} />
+          <KpiCard label="Titres au catalogue" value={fullNumber(overview.totalVideos)} icon="film" delta={3.1} />
+          <KpiCard label="Visionnages (30 j)" value={compact(overview.totalViews)} icon="eye" delta={8.7} />
+          <KpiCard label="Heures visionnées" value={compact(overview.totalWatchHours)} icon="clock" delta={5.2} />
+        </div>
+
+        <ChartCard
+          title="Visionnages par jour"
+          subtitle="30 derniers jours"
+          className="dash__wide"
+        >
+          <LineChart data={viewsOverTime} />
+        </ChartCard>
+
+        <div className="dash__row">
+          <ChartCard title="Visionnages par catégorie">
+            <BarChart data={byCategory} />
+          </ChartCard>
+          <ChartCard title="Répartition des abonnés">
+            <DonutChart data={donut} />
+          </ChartCard>
+        </div>
+
+        <ChartCard title="Titres les plus regardés" className="dash__wide">
+          <TopVideosTable data={topVideos} />
+        </ChartCard>
+      </div>
+    )
+  }
 
   return (
-    <main className="app-shell">
-      <span className="badge">Livrable 2</span>
-      <h1>📊 Admin</h1>
-      <p>Dashboard de suivi d'activité de la plateforme — squelette initial.</p>
-
-      <div className="api-status">
-        {api.state === 'loading' && <span>Connexion au backend…</span>}
-        {api.state === 'ok' && <span>✅ Backend connecté : {api.service}</span>}
-        {api.state === 'error' && <span>❌ Backend injoignable ({api.message})</span>}
-      </div>
-    </main>
+    <DashboardLayout
+      active="overview"
+      title="Vue d'ensemble"
+      subtitle="Activité de la plateforme"
+    >
+      {body}
+    </DashboardLayout>
   )
 }
 
