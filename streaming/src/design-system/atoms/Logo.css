@@ -1,0 +1,10 @@
+.logo {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  color: var(--c-accent);
+  cursor: pointer;
+  user-select: none;
+  line-height: 1;
+}

@@ -1,0 +1,55 @@
+:root {
+  /* Couleurs */
+  --c-bg: #141414;
+  --c-bg-translucent: rgba(20, 20, 20, 0.92);
+  --c-surface: #181818;
+  --c-surface-2: #232323;
+  --c-surface-3: #333333;
+  --c-border: rgba(255, 255, 255, 0.15);
+  --c-text: #ffffff;
+  --c-text-muted: #b3b3b3;
+  --c-text-dim: #808080;
+  --c-accent: #e50914;
+  --c-accent-hover: #f40612;
+  --c-success: #46d369;
+  --c-scrim: rgba(0, 0, 0, 0.75);
+
+  /* Typographie */
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --fs-hero: clamp(2rem, 5vw, 3.75rem);
+  --fs-2xl: 2rem;
+  --fs-xl: 1.5rem;
+  --fs-lg: 1.25rem;
+  --fs-md: 1rem;
+  --fs-sm: 0.875rem;
+  --fs-xs: 0.75rem;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+
+  /* Espacements */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* Rayons */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  /* Ombres */
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-modal: 0 12px 40px rgba(0, 0, 0, 0.75);
+
+  /* Divers */
+  --nav-h: 68px;
+  --page-x: clamp(16px, 4vw, 60px);
+  --z-nav: 100;
+  --z-modal: 200;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
