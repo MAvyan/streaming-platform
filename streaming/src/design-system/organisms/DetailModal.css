@@ -68,6 +68,7 @@
   right: var(--sp-6);
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--sp-4);
 }
 

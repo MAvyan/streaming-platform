@@ -1,38 +1,113 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useCatalog, groupByCategory } from './hooks/useCatalog'
+import { useTitleRoute } from './hooks/useHashRoute'
+import type { Video } from './lib/api'
+import { Navbar } from './design-system/organisms/Navbar'
+import { Hero } from './design-system/organisms/Hero'
+import { Carousel } from './design-system/organisms/Carousel'
+import { VideoGrid } from './design-system/organisms/VideoGrid'
+import { DetailModal } from './design-system/organisms/DetailModal'
+import { BrowseTemplate } from './design-system/templates/BrowseTemplate'
 import './App.css'
 
-type ApiStatus =
-  | { state: 'loading' }
-  | { state: 'ok'; service: string }
-  | { state: 'error'; message: string }
-
-/**
- * Squelette du Livrable 1 — plateforme de consultation de contenu vidéo.
- * Pour l'instant on vérifie surtout que le front est bien câblé au backend
- * (l'appel /api est relayé vers Express via le proxy Vite).
- */
 function App() {
-  const [api, setApi] = useState<ApiStatus>({ state: 'loading' })
+  const { videos, categories, loading, error } = useCatalog()
+  const { titleId, openTitle, closeTitle } = useTitleRoute()
+
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [playing, setPlaying] = useState(false)
+
+  const selected = useMemo(
+    () => videos.find((v) => v.id === titleId) ?? null,
+    [videos, titleId],
+  )
 
   useEffect(() => {
-    fetch('/api/health')
-      .then((r) => r.json())
-      .then((data) => setApi({ state: 'ok', service: data.service ?? 'backend' }))
-      .catch((e) => setApi({ state: 'error', message: String(e) }))
-  }, [])
+    if (!titleId) setPlaying(false)
+  }, [titleId])
+
+  const open = (video: Video) => openTitle(video.id)
+  const play = (video: Video) => {
+    setPlaying(true)
+    openTitle(video.id)
+  }
+
+  const goHome = () => {
+    setActiveCategory(null)
+    setSearch('')
+  }
+
+  const rows = useMemo(() => groupByCategory(videos), [videos])
+  const featured = videos[0]
+
+  const results = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return []
+    return videos.filter(
+      (v) =>
+        v.title.toLowerCase().includes(q) || v.category.toLowerCase().includes(q),
+    )
+  }, [videos, search])
+
+  const navbar = (
+    <Navbar
+      categories={categories}
+      activeCategory={activeCategory}
+      onSelectCategory={(c) => {
+        setActiveCategory(c)
+        setSearch('')
+      }}
+      search={search}
+      onSearch={setSearch}
+      onHome={goHome}
+    />
+  )
+
+  let content
+  if (error) {
+    content = <p className="app__state">Contenu indisponible ({error}).</p>
+  } else if (loading) {
+    content = <p className="app__state">Chargement du catalogue…</p>
+  } else if (search.trim()) {
+    content = (
+      <VideoGrid title={`Résultats pour « ${search.trim()} »`} videos={results} onOpen={open} />
+    )
+  } else if (activeCategory) {
+    content = (
+      <VideoGrid
+        title={activeCategory}
+        videos={videos.filter((v) => v.category === activeCategory)}
+        onOpen={open}
+      />
+    )
+  } else {
+    content = (
+      <>
+        {featured && <Hero video={featured} onPlay={play} onInfo={open} />}
+        <div className="app__rows">
+          <Carousel title="Tendances actuelles" videos={videos.slice(0, 12)} onOpen={open} />
+          {rows.map(([category, list]) => (
+            <Carousel key={category} title={category} videos={list} onOpen={open} />
+          ))}
+        </div>
+      </>
+    )
+  }
 
   return (
-    <main className="app-shell">
-      <span className="badge">Livrable 1</span>
-      <h1>🎬 Streaming</h1>
-      <p>Plateforme de consultation de contenu vidéo — squelette initial.</p>
-
-      <div className="api-status">
-        {api.state === 'loading' && <span>Connexion au backend…</span>}
-        {api.state === 'ok' && <span>✅ Backend connecté : {api.service}</span>}
-        {api.state === 'error' && <span>❌ Backend injoignable ({api.message})</span>}
-      </div>
-    </main>
+    <BrowseTemplate navbar={navbar}>
+      {content}
+      {selected && (
+        <DetailModal
+          video={selected}
+          playing={playing}
+          onPlay={() => setPlaying(true)}
+          onStop={() => setPlaying(false)}
+          onClose={closeTitle}
+        />
+      )}
+    </BrowseTemplate>
   )
 }
 
