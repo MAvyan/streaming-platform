@@ -4,26 +4,57 @@
   width: 100%;
   padding: 0;
   border: none;
-  background: var(--c-surface);
+  background: transparent;
   border-radius: var(--r-md);
-  overflow: hidden;
   cursor: pointer;
   color: var(--c-text);
   text-align: left;
-  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  transition: transform 0.25s var(--ease);
 }
 
 .card__art {
   position: relative;
-  aspect-ratio: 2 / 3;
-  background: var(--c-surface-2);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--sp-3);
 }
 
-.card__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.card--poster .card__art {
+  aspect-ratio: 2 / 3;
+}
+.card--wide .card__art {
+  aspect-ratio: 16 / 9;
+}
+
+.card__monogram {
+  position: absolute;
+  top: var(--sp-2);
+  left: var(--sp-3);
+  font-size: 2.75rem;
+  font-weight: var(--fw-bold);
+  color: rgba(242, 242, 239, 0.28);
+  line-height: 1;
+}
+
+.card__base {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card__name {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+}
+
+.card__genre {
+  font-size: var(--fs-xs);
+  color: var(--c-text-muted);
 }
 
 .card__play {
@@ -32,28 +63,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(12, 12, 14, 0.4);
+  color: var(--c-accent);
   opacity: 0;
   transition: opacity 0.2s var(--ease);
 }
 
 .card__hover {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: var(--sp-3);
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
+  overflow: hidden;
+  max-height: 0;
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
-  pointer-events: none;
-}
-
-.card__title {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  margin-bottom: var(--sp-1);
+  transition: max-height 0.2s var(--ease), opacity 0.2s var(--ease), margin 0.2s var(--ease);
 }
 
 .card__meta {
@@ -62,35 +82,28 @@
   gap: var(--sp-2);
   font-size: var(--fs-xs);
   color: var(--c-text-muted);
-  margin-bottom: 2px;
+  padding-top: var(--sp-2);
 }
 
 .card__match {
-  color: var(--c-success);
+  color: var(--c-accent);
   font-weight: var(--fw-bold);
-}
-
-.card__cat {
-  font-size: var(--fs-xs);
-  color: var(--c-text-dim);
 }
 
 @media (hover: hover) {
   .card:hover {
-    transform: scale(1.06);
-    box-shadow: var(--shadow-card);
-    z-index: 2;
+    transform: translateY(-4px);
   }
-  .card:hover .card__play,
-  .card:hover .card__hover {
+  .card:hover .card__play {
     opacity: 1;
   }
   .card:hover .card__hover {
-    transform: translateY(0);
+    max-height: 40px;
+    opacity: 1;
   }
 }
 
 .card:focus-visible {
-  outline: 2px solid var(--c-text);
-  outline-offset: 2px;
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
 }

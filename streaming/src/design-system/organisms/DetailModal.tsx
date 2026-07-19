@@ -5,6 +5,7 @@ import { Badge } from '../atoms/Badge'
 import { Icon } from '../atoms/Icon'
 import { Player } from './Player'
 import { formatDuration, matchScore } from '../../lib/format'
+import { genreTint, monogram } from '../../lib/genre'
 import './DetailModal.css'
 
 type Props = {
@@ -41,9 +42,14 @@ export function DetailModal({ video, playing, onPlay, onStop, onClose }: Props) 
             <Player title={video.title} onExit={onStop} />
           ) : (
             <>
-              {video.backdropUrl && (
-                <img src={video.backdropUrl} alt="" className="modal__img" />
-              )}
+              <div
+                className="modal__art"
+                style={{ background: genreTint(video.category) }}
+              >
+                <span className="modal__monogram" aria-hidden="true">
+                  {monogram(video.title)}
+                </span>
+              </div>
               <div className="modal__hero-scrim" />
               <div className="modal__hero-body">
                 <h2 className="modal__title">{video.title}</h2>
