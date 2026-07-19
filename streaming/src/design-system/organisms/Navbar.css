@@ -44,8 +44,8 @@
   color: var(--c-text);
 }
 .nav__link.is-active {
-  color: var(--c-text);
-  font-weight: var(--fw-bold);
+  color: var(--c-accent);
+  font-weight: var(--fw-semibold);
 }
 
 .nav__icon {
@@ -60,7 +60,7 @@
   width: 32px;
   height: 32px;
   border-radius: var(--r-sm);
-  background: linear-gradient(135deg, var(--c-accent), #7a0006);
+  background: linear-gradient(135deg, var(--c-accent), #a8791d);
   display: inline-block;
 }
 

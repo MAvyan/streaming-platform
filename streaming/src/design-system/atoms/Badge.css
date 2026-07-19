@@ -14,5 +14,6 @@
 
 .badge--accent {
   background: var(--c-accent);
-  color: var(--c-text);
+  color: var(--c-on-accent);
+  font-weight: var(--fw-semibold);
 }

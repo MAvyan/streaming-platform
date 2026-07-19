@@ -25,18 +25,20 @@
 }
 
 .btn--primary {
-  background: var(--c-text);
-  color: #000;
+  background: var(--c-accent);
+  color: var(--c-on-accent);
+  font-weight: var(--fw-semibold);
 }
 .btn--primary:hover {
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--c-accent-hover);
 }
 
 .btn--secondary {
-  background: rgba(109, 109, 110, 0.7);
+  background: rgba(242, 242, 239, 0.14);
+  border: 1px solid var(--c-border);
 }
 .btn--secondary:hover {
-  background: rgba(109, 109, 110, 0.5);
+  background: rgba(242, 242, 239, 0.22);
 }
 
 .btn--ghost {

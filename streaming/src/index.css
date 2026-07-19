@@ -30,5 +30,5 @@ button {
 
 ::selection {
   background: var(--c-accent);
-  color: var(--c-text);
+  color: var(--c-on-accent);
 }
