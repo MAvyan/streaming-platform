@@ -1,6 +1,5 @@
 import { Icon, type IconName } from '../atoms/Icon'
 import { Badge } from '../atoms/Badge'
-import './KpiCard.css'
 
 type Props = {
   label: string
@@ -12,9 +11,9 @@ type Props = {
 export function KpiCard({ label, value, icon, delta }: Props) {
   const positive = (delta ?? 0) >= 0
   return (
-    <article className="kpi">
-      <div className="kpi__head">
-        <span className="kpi__icon">
+    <article className="flex flex-col gap-2 rounded-card border border-line bg-surface p-4">
+      <div className="flex items-center justify-between">
+        <span className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-md bg-accent/15 text-accent">
           <Icon name={icon} size={18} />
         </span>
         {delta !== undefined && (
@@ -25,8 +24,8 @@ export function KpiCard({ label, value, icon, delta }: Props) {
           </Badge>
         )}
       </div>
-      <div className="kpi__value">{value}</div>
-      <div className="kpi__label">{label}</div>
+      <div className="text-[2rem] font-bold leading-[1.1] tabular-nums">{value}</div>
+      <div className="text-sm text-muted">{label}</div>
     </article>
   )
 }

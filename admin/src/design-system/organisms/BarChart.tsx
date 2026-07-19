@@ -1,6 +1,5 @@
 import type { CategoryStat } from '../../lib/api'
 import { fullNumber } from '../../lib/format'
-import './BarChart.css'
 
 const SERIES = [
   'var(--series-1)',
@@ -17,6 +16,9 @@ const BAR_H = 22
 const LABEL_W = 120
 const VALUE_W = 52
 
+const labelStyle = { fill: 'var(--color-secondary)', fontSize: 13, fontFamily: 'var(--font-sans)' }
+const valueStyle = { fill: 'var(--color-ink)', fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-mono)' }
+
 export function BarChart({ data }: { data: CategoryStat[] }) {
   if (data.length === 0) return null
 
@@ -25,24 +27,17 @@ export function BarChart({ data }: { data: CategoryStat[] }) {
   const H = data.length * ROW_H
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="bar" role="img" aria-label="Visionnages par catégorie">
+    <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label="Visionnages par catégorie">
       {data.map((d, i) => {
         const y = i * ROW_H + (ROW_H - BAR_H) / 2
         const w = Math.max(2, (d.views / max) * trackW)
         return (
-          <g key={d.category} className="bar__row">
+          <g key={d.category} className="group">
             <title>{`${d.category} : ${fullNumber(d.views)} visionnages`}</title>
-            <text x="0" y={i * ROW_H + ROW_H / 2} dy="0.32em" className="bar__label">
+            <text x="0" y={i * ROW_H + ROW_H / 2} dy="0.32em" style={labelStyle}>
               {d.category}
             </text>
-            <rect
-              x={LABEL_W}
-              y={y}
-              width={trackW}
-              height={BAR_H}
-              rx="4"
-              className="bar__track"
-            />
+            <rect x={LABEL_W} y={y} width={trackW} height={BAR_H} rx="4" fill="var(--color-surface-2)" />
             <rect
               x={LABEL_W}
               y={y}
@@ -50,8 +45,9 @@ export function BarChart({ data }: { data: CategoryStat[] }) {
               height={BAR_H}
               rx="4"
               fill={SERIES[i % SERIES.length]}
+              className="transition-opacity group-hover:opacity-85"
             />
-            <text x={W} y={i * ROW_H + ROW_H / 2} dy="0.32em" className="bar__value">
+            <text x={W} y={i * ROW_H + ROW_H / 2} dy="0.32em" textAnchor="end" style={valueStyle}>
               {fullNumber(d.views)}
             </text>
           </g>

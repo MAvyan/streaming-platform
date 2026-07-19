@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import type { TimePoint } from '../../lib/api'
 import { shortDate, fullNumber } from '../../lib/format'
-import './LineChart.css'
 
 const W = 760
 const H = 280
@@ -11,6 +10,8 @@ function niceMax(value: number): number {
   const step = Math.pow(10, Math.floor(Math.log10(value))) / 2
   return Math.ceil(value / step) * step
 }
+
+const tickStyle = { fill: 'var(--color-muted)', fontSize: 11, fontFamily: 'var(--font-mono)' }
 
 export function LineChart({ data }: { data: TimePoint[] }) {
   const [hover, setHover] = useState<number | null>(null)
@@ -38,8 +39,8 @@ export function LineChart({ data }: { data: TimePoint[] }) {
   }
 
   return (
-    <div className="line" onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
-      <svg viewBox={`0 0 ${W} ${H}`} className="line__svg" role="img" aria-label="Visionnages par jour">
+    <div className="relative w-full" onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full overflow-visible" role="img" aria-label="Visionnages par jour">
         <defs>
           <linearGradient id="line-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--series-1)" stopOpacity="0.35" />
@@ -49,25 +50,19 @@ export function LineChart({ data }: { data: TimePoint[] }) {
 
         {ticks.map((t) => (
           <g key={t}>
-            <line
-              x1={PAD.left}
-              x2={W - PAD.right}
-              y1={y(t)}
-              y2={y(t)}
-              className="line__grid"
-            />
-            <text x={PAD.left - 10} y={y(t)} dy="0.32em" className="line__ytick">
+            <line x1={PAD.left} x2={W - PAD.right} y1={y(t)} y2={y(t)} stroke="var(--gridline)" strokeWidth={1} />
+            <text x={PAD.left - 10} y={y(t)} dy="0.32em" textAnchor="end" style={tickStyle}>
               {t}
             </text>
           </g>
         ))}
 
         <path d={area} fill="url(#line-fill)" />
-        <path d={line} className="line__path" />
+        <path d={line} fill="none" stroke="var(--series-1)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
 
         {data.map((d, i) =>
           i % labelEvery === 0 ? (
-            <text key={d.date} x={x(i)} y={H - 10} className="line__xtick">
+            <text key={d.date} x={x(i)} y={H - 10} textAnchor="middle" style={tickStyle}>
               {shortDate(d.date)}
             </text>
           ) : null,
@@ -75,25 +70,19 @@ export function LineChart({ data }: { data: TimePoint[] }) {
 
         {hover !== null && (
           <g>
-            <line
-              x1={x(hover)}
-              x2={x(hover)}
-              y1={PAD.top}
-              y2={PAD.top + plotH}
-              className="line__crosshair"
-            />
-            <circle cx={x(hover)} cy={y(data[hover].views)} r="5" className="line__dot" />
+            <line x1={x(hover)} x2={x(hover)} y1={PAD.top} y2={PAD.top + plotH} stroke="var(--color-line-strong)" strokeWidth={1} strokeDasharray="3 3" />
+            <circle cx={x(hover)} cy={y(data[hover].views)} r="5" fill="var(--series-1)" stroke="var(--color-surface)" strokeWidth={2} />
           </g>
         )}
       </svg>
 
       {hover !== null && (
         <div
-          className="line__tooltip"
+          className="pointer-events-none absolute flex -translate-x-1/2 -translate-y-[calc(100%+12px)] flex-col gap-0.5 whitespace-nowrap rounded-md border border-line-strong bg-surface-3 px-3 py-2 shadow-lg"
           style={{ left: `${(x(hover) / W) * 100}%`, top: `${(y(data[hover].views) / H) * 100}%` }}
         >
-          <span className="line__tooltip-date">{shortDate(data[hover].date)}</span>
-          <span className="line__tooltip-value">{fullNumber(data[hover].views)} vues</span>
+          <span className="text-xs text-muted">{shortDate(data[hover].date)}</span>
+          <span className="text-sm font-semibold tabular-nums">{fullNumber(data[hover].views)} vues</span>
         </div>
       )}
     </div>
