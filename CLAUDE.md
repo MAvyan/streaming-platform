@@ -14,9 +14,13 @@ Plateforme de streaming (LUMEN) : deux interfaces React + une API.
 
 - **From scratch** : aucune librairie de composants UI ni de graphiques. Les composants,
   le routing et les graphiques (SVG) sont écrits à la main.
-- **Atomic design** : le design system est organisé en `atoms → molecules → organisms → templates`,
-  avec des tokens CSS (couleurs, espacements, typo) comme source unique de vérité.
-- Palette et registre proches d'une plateforme de streaming : fond sombre, accent rouge.
+- **Atomic design** : le design system est organisé en `atoms → molecules → organisms → templates`.
+- **Styling = Tailwind v4** (`@tailwindcss/vite`). Les tokens (couleurs, typo, radius) vivent dans
+  le bloc `@theme` de `src/index.css` de chaque app → utilitaires `bg-bg`, `text-accent`, `font-sans`…
+  Pas de `.css` par composant : un seul `index.css` par app (theme + quelques cas non triviaux :
+  dégradés/scrims, keyframes, colonnes de carrousel, variables de séries dataviz).
+- Streaming : design "Lumen" (fond `#0c0c0e`, accent or `#f2c74c`, Hanken Grotesk).
+  Admin : registre outil sobre (accent bleu `#3987e5`).
 
 ## Architecture
 
