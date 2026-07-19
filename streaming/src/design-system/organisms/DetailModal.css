@@ -66,6 +66,14 @@
   line-height: 0.8;
 }
 
+.modal__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .modal__hero-scrim {
   position: absolute;
   inset: 0;

@@ -49,6 +49,9 @@ export function DetailModal({ video, playing, onPlay, onStop, onClose }: Props) 
                 <span className="modal__monogram" aria-hidden="true">
                   {monogram(video.title)}
                 </span>
+                {video.backdropUrl && (
+                  <img src={video.backdropUrl} alt="" className="modal__img" />
+                )}
               </div>
               <div className="modal__hero-scrim" />
               <div className="modal__hero-body">

@@ -21,6 +21,7 @@ export function Hero({ video, onPlay, onInfo }: Props) {
       <span className="hero__monogram" aria-hidden="true">
         {monogram(video.title)}
       </span>
+      {video.backdropUrl && <img src={video.backdropUrl} alt="" className="hero__bg" />}
       <div className="hero__scrim" />
       <div className="hero__content">
         <span className="hero__eyebrow">Nouveau film Lumen</span>

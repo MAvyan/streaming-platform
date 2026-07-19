@@ -12,6 +12,8 @@ type Props = {
 }
 
 export function VideoCard({ video, onOpen, ratio = 'poster' }: Props) {
+  const image = ratio === 'wide' ? video.backdropUrl : video.thumbnailUrl
+
   return (
     <button
       className={`card card--${ratio}`}
@@ -22,6 +24,8 @@ export function VideoCard({ video, onOpen, ratio = 'poster' }: Props) {
         <span className="card__monogram" aria-hidden="true">
           {monogram(video.title)}
         </span>
+        {image && <img src={image} alt="" loading="lazy" className="card__img" />}
+        <div className="card__scrim" />
         <div className="card__base">
           <span className="card__name">{video.title}</span>
           <span className="card__genre">{video.category}</span>
