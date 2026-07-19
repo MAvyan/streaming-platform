@@ -1,24 +1,42 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import 'tailwindcss';
+
+/* Design system admin (registre outil sobre) → tokens Tailwind */
+@theme {
+  --color-bg: #0e0f12;
+  --color-surface: #17181b;
+  --color-surface-2: #1e2024;
+  --color-surface-3: #262930;
+  --color-line: rgba(255, 255, 255, 0.1);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
+  --color-ink: #f2f3f5;
+  --color-secondary: #b9bcc2;
+  --color-muted: #7d8288;
+  --color-accent: #3987e5;
+  --color-good: #0ca30c;
+  --color-critical: #d03b3b;
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --radius-card: 10px;
 }
 
-html,
-body,
-#root {
-  margin: 0;
-  min-height: 100%;
+/* Valeurs référencées en style/attribut inline (séries dataviz, chrome des graphes) */
+:root {
+  --accent-soft: rgba(57, 135, 229, 0.14);
+  --series-1: #3987e5;
+  --series-2: #199e70;
+  --series-3: #c98500;
+  --series-4: #008300;
+  --series-5: #9085e9;
+  --series-6: #e66767;
+  --gridline: #2c2c2a;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--c-bg);
-  color: var(--c-text);
+  background: var(--color-bg);
+  color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: var(--fs-md);
   -webkit-font-smoothing: antialiased;
-}
-
-button {
-  font-family: inherit;
 }
