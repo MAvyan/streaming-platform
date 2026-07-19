@@ -1,34 +1,117 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import 'tailwindcss';
+
+/* Design system Lumen → tokens Tailwind (bg-bg, text-accent, font-sans…) */
+@theme {
+  --color-bg: #0c0c0e;
+  --color-bg-90: rgba(12, 12, 14, 0.82);
+  --color-surface: #17171a;
+  --color-surface-2: #212125;
+  --color-surface-3: #2c2c31;
+  --color-line: rgba(242, 242, 239, 0.15);
+  --color-ink: #f2f2ef;
+  --color-muted: rgba(242, 242, 239, 0.66);
+  --color-dim: rgba(242, 242, 239, 0.45);
+  --color-accent: #f2c74c;
+  --color-accent-hover: #f6d571;
+  --color-on-accent: #0c0c0e;
+
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-card: 8px;
+  --radius-btn: 6px;
 }
 
-html,
-body,
-#root {
-  margin: 0;
-  min-height: 100%;
+/* Teintes de genre (posters sans image / placeholder) — utilisées en style inline */
+:root {
+  --tint-blue: #3d4a5c;
+  --tint-teal: #3d565c;
+  --tint-violet: #4a3d5c;
+  --tint-green: #3d5c4a;
+  --tint-magenta: #5c3d52;
+  --tint-olive: #565c3d;
+  --tint-red: #5c3d3d;
+  --page-x: clamp(16px, 4vw, 60px);
+  color-scheme: dark;
 }
 
 body {
-  background: var(--c-bg);
-  color: var(--c-text);
+  background: var(--color-bg);
+  color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: var(--fs-md);
   -webkit-font-smoothing: antialiased;
 }
 
-img {
-  display: block;
-  max-width: 100%;
-}
-
-button {
-  font-family: inherit;
-}
-
 ::selection {
-  background: var(--c-accent);
-  color: var(--c-on-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* Cas non triviaux gardés en CSS global (dégradés, scrims, animations) */
+@layer components {
+  .hero-scrim {
+    background:
+      linear-gradient(77deg, rgba(12, 12, 14, 0.82) 0%, rgba(12, 12, 14, 0.35) 45%, transparent 72%),
+      linear-gradient(rgba(12, 12, 14, 0) 55%, var(--color-bg) 98%);
+  }
+  .card-scrim {
+    background: linear-gradient(transparent 45%, rgba(12, 12, 14, 0.9));
+  }
+  .modal-scrim {
+    background: linear-gradient(transparent 50%, var(--color-surface));
+  }
+  .player-glow {
+    background: radial-gradient(circle at 50% 40%, rgba(242, 199, 76, 0.3), transparent 55%);
+    animation: player-pulse 4s ease-in-out infinite;
+  }
+  .modal-pop {
+    animation: modal-rise 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  /* Pistes de carrousel : nombre de colonnes visibles selon la largeur */
+  .row-track {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 12px;
+    padding: 0 var(--page-x);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .row-track::-webkit-scrollbar {
+    display: none;
+  }
+  .row-track--poster {
+    grid-auto-columns: calc((100% - var(--page-x) * 2 - 12px * 5) / 6);
+  }
+  .row-track--wide {
+    grid-auto-columns: calc((100% - var(--page-x) * 2 - 12px * 3) / 4);
+  }
+  @media (max-width: 1200px) {
+    .row-track--poster { grid-auto-columns: calc((100% - var(--page-x) * 2 - 12px * 4) / 5); }
+    .row-track--wide { grid-auto-columns: calc((100% - var(--page-x) * 2 - 12px * 2) / 3); }
+  }
+  @media (max-width: 900px) {
+    .row-track--poster { grid-auto-columns: calc((100% - var(--page-x) * 2 - 12px * 3) / 4); }
+  }
+  @media (max-width: 640px) {
+    .row-track--poster { grid-auto-columns: 42%; }
+    .row-track--wide { grid-auto-columns: 78%; }
+  }
+}
+
+@keyframes player-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+@keyframes modal-rise {
+  from { opacity: 0; transform: translateY(24px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .player-glow, .modal-pop { animation: none; }
 }
