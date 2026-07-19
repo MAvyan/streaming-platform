@@ -4,7 +4,7 @@
 
 .row__title {
   font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
   margin: 0 0 var(--sp-3);
   padding: 0 var(--page-x);
 }
@@ -16,8 +16,7 @@
 .row__track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: calc((100% - var(--page-x) * 2 - var(--sp-2) * 5) / 6);
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   padding: 0 var(--page-x);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -25,6 +24,13 @@
 }
 .row__track::-webkit-scrollbar {
   display: none;
+}
+
+.row__track--poster {
+  grid-auto-columns: calc((100% - var(--page-x) * 2 - var(--sp-3) * 5) / 6);
+}
+.row__track--wide {
+  grid-auto-columns: calc((100% - var(--page-x) * 2 - var(--sp-3) * 3) / 4);
 }
 
 .row__item {
@@ -37,7 +43,7 @@
   bottom: 0;
   width: var(--page-x);
   border: none;
-  background: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(90deg, var(--c-bg), transparent);
   color: var(--c-text);
   cursor: pointer;
   display: flex;
@@ -52,29 +58,36 @@
 }
 .row__ctrl--right {
   right: 0;
+  background: linear-gradient(270deg, var(--c-bg), transparent);
 }
 .row__viewport:hover .row__ctrl {
   opacity: 1;
 }
 .row__ctrl:focus-visible {
   opacity: 1;
-  outline: 2px solid var(--c-text);
+  outline: 2px solid var(--c-accent);
   outline-offset: -4px;
 }
 
 @media (max-width: 1200px) {
-  .row__track {
-    grid-auto-columns: calc((100% - var(--page-x) * 2 - var(--sp-2) * 4) / 5);
+  .row__track--poster {
+    grid-auto-columns: calc((100% - var(--page-x) * 2 - var(--sp-3) * 4) / 5);
+  }
+  .row__track--wide {
+    grid-auto-columns: calc((100% - var(--page-x) * 2 - var(--sp-3) * 2) / 3);
   }
 }
 @media (max-width: 900px) {
-  .row__track {
-    grid-auto-columns: calc((100% - var(--page-x) * 2 - var(--sp-2) * 3) / 4);
+  .row__track--poster {
+    grid-auto-columns: calc((100% - var(--page-x) * 2 - var(--sp-3) * 3) / 4);
   }
 }
 @media (max-width: 640px) {
-  .row__track {
-    grid-auto-columns: 40%;
+  .row__track--poster {
+    grid-auto-columns: 42%;
+  }
+  .row__track--wide {
+    grid-auto-columns: 78%;
   }
   .row__ctrl {
     display: none;

@@ -8,9 +8,10 @@ type Props = {
   title: string
   videos: Video[]
   onOpen: (video: Video) => void
+  ratio?: 'poster' | 'wide'
 }
 
-export function Carousel({ title, videos, onOpen }: Props) {
+export function Carousel({ title, videos, onOpen, ratio = 'poster' }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
 
   const scrollBy = (dir: 1 | -1) => {
@@ -32,10 +33,10 @@ export function Carousel({ title, videos, onOpen }: Props) {
         >
           <Icon name="chevron-left" size={28} />
         </button>
-        <div className="row__track" ref={trackRef}>
+        <div className={`row__track row__track--${ratio}`} ref={trackRef}>
           {videos.map((v) => (
             <div className="row__item" key={v.id}>
-              <VideoCard video={v} onOpen={onOpen} />
+              <VideoCard video={v} onOpen={onOpen} ratio={ratio} />
             </div>
           ))}
         </div>

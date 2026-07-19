@@ -86,6 +86,12 @@ function App() {
       <>
         {featured && <Hero video={featured} onPlay={play} onInfo={open} />}
         <div className="app__rows">
+          <Carousel
+            title="Reprendre la lecture"
+            videos={videos.slice(0, 6)}
+            onOpen={open}
+            ratio="wide"
+          />
           <Carousel title="Tendances actuelles" videos={videos.slice(0, 12)} onOpen={open} />
           {rows.map(([category, list]) => (
             <Carousel key={category} title={category} videos={list} onOpen={open} />
