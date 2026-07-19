@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Logo } from '../atoms/Logo'
 import { Icon } from '../atoms/Icon'
 import { SearchBar } from '../molecules/SearchBar'
-import './Navbar.css'
 
 type Props = {
   categories: string[]
@@ -30,35 +29,41 @@ export function Navbar({
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const link = (active: boolean) =>
+    `border-0 bg-transparent p-0 font-sans text-[15px] cursor-pointer transition-colors ${
+      active ? 'text-accent font-semibold' : 'text-muted hover:text-ink'
+    }`
+
   return (
-    <header className={`nav ${scrolled ? 'nav--solid' : ''}`}>
-      <div className="nav__left">
+    <header
+      className={`fixed inset-x-0 top-0 z-[100] flex h-[72px] items-center justify-between px-[clamp(16px,4vw,60px)] transition-colors ${
+        scrolled ? 'bg-bg' : 'bg-gradient-to-b from-black/75 to-transparent'
+      }`}
+    >
+      <div className="flex items-center gap-6">
         <Logo onClick={onHome} />
-        <nav className="nav__links">
-          <button
-            className={`nav__link ${!activeCategory ? 'is-active' : ''}`}
-            onClick={() => onSelectCategory(null)}
-          >
+        <nav className="flex items-center gap-4 max-[900px]:hidden">
+          <button className={link(!activeCategory)} onClick={() => onSelectCategory(null)}>
             Accueil
           </button>
           {categories.map((c) => (
-            <button
-              key={c}
-              className={`nav__link ${activeCategory === c ? 'is-active' : ''}`}
-              onClick={() => onSelectCategory(c)}
-            >
+            <button key={c} className={link(activeCategory === c)} onClick={() => onSelectCategory(c)}>
               {c}
             </button>
           ))}
         </nav>
       </div>
 
-      <div className="nav__right">
+      <div className="flex items-center gap-6">
         <SearchBar value={search} onChange={onSearch} />
-        <button className="nav__icon" aria-label="Notifications">
+        <button className="flex border-0 bg-transparent text-ink cursor-pointer" aria-label="Notifications">
           <Icon name="bell" size={22} />
         </button>
-        <span className="nav__avatar" aria-hidden="true" />
+        <span
+          className="inline-block h-8 w-8 rounded"
+          style={{ background: 'linear-gradient(135deg, var(--color-accent), #a8791d)' }}
+          aria-hidden="true"
+        />
       </div>
     </header>
   )

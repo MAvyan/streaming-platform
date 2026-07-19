@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from '../atoms/Icon'
-import './SearchBar.css'
 
 type Props = {
   value: string
@@ -18,9 +17,13 @@ export function SearchBar({ value, onChange }: Props) {
   const expanded = open || value.length > 0
 
   return (
-    <div className={`search ${expanded ? 'search--open' : ''}`}>
+    <div
+      className={`flex items-center rounded border transition-colors ${
+        expanded ? 'border-line bg-black/70' : 'border-transparent bg-transparent'
+      }`}
+    >
       <button
-        className="search__btn"
+        className="flex items-center justify-center border-0 bg-transparent p-2 text-ink cursor-pointer"
         onClick={() => setOpen((o) => !o)}
         aria-label="Rechercher"
       >
@@ -28,13 +31,15 @@ export function SearchBar({ value, onChange }: Props) {
       </button>
       <input
         ref={inputRef}
-        className="search__input"
         type="text"
         placeholder="Titres, catégories..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={() => !value && setOpen(false)}
         aria-label="Rechercher un contenu"
+        className={`border-0 bg-transparent font-sans text-[15px] text-ink outline-none transition-all duration-200 ${
+          expanded ? 'w-[180px] pr-3 max-sm:w-[120px]' : 'w-0 p-0'
+        }`}
       />
     </div>
   )

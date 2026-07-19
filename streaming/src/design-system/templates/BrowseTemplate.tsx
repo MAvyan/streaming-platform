@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { Footer } from '../organisms/Footer'
-import './BrowseTemplate.css'
 
 type Props = {
   navbar: ReactNode
@@ -9,9 +8,9 @@ type Props = {
 
 export function BrowseTemplate({ navbar, children }: Props) {
   return (
-    <div className="browse">
+    <div className="flex min-h-screen flex-col bg-bg">
       {navbar}
-      <main className="browse__main">{children}</main>
+      <main className="flex-1">{children}</main>
       <Footer />
     </div>
   )

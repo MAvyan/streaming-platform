@@ -8,7 +8,6 @@ import { Carousel } from './design-system/organisms/Carousel'
 import { VideoGrid } from './design-system/organisms/VideoGrid'
 import { DetailModal } from './design-system/organisms/DetailModal'
 import { BrowseTemplate } from './design-system/templates/BrowseTemplate'
-import './App.css'
 
 function App() {
   const { videos, categories, loading, error } = useCatalog()
@@ -66,9 +65,9 @@ function App() {
 
   let content
   if (error) {
-    content = <p className="app__state">Contenu indisponible ({error}).</p>
+    content = <p className="px-[var(--page-x)] pt-[136px] text-center text-muted">Contenu indisponible ({error}).</p>
   } else if (loading) {
-    content = <p className="app__state">Chargement du catalogue…</p>
+    content = <p className="px-[var(--page-x)] pt-[136px] text-center text-muted">Chargement du catalogue…</p>
   } else if (search.trim()) {
     content = (
       <VideoGrid title={`Résultats pour « ${search.trim()} »`} videos={results} onOpen={open} />
@@ -85,7 +84,7 @@ function App() {
     content = (
       <>
         {featured && <Hero video={featured} onPlay={play} onInfo={open} />}
-        <div className="app__rows">
+        <div className="relative z-[1] mt-[clamp(-80px,-6vw,-40px)]">
           <Carousel
             title="Reprendre la lecture"
             videos={videos.slice(0, 6)}
