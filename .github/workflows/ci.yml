@@ -22,12 +22,14 @@ jobs:
           cache: npm
           cache-dependency-path: ${{ matrix.project }}/package-lock.json
 
-      # npm install (et non npm ci) pour contourner le bug npm des dépendances
-      # optionnelles natives (npm/cli#4828) qui n'installe pas les binaires
-      # de plateforme (oxlint, rollup, tailwind-oxide) sur le runner glibc.
+      # npm 11 corrige le bug des dépendances optionnelles natives (npm/cli#4828)
+      # qui empêchait l'installation des binaires de plateforme (oxlint, rollup…).
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         working-directory: ${{ matrix.project }}
-        run: npm install --no-audit --no-fund
+        run: npm ci
 
       - name: Generate Prisma client
         if: matrix.project == 'backend'
