@@ -22,9 +22,11 @@ export function Sidebar({ active, open, onClose }: Props) {
           open ? 'max-[860px]:translate-x-0' : 'max-[860px]:-translate-x-full'
         }`}
       >
-        <div className="flex h-14 shrink-0 items-baseline gap-2 border-b border-line px-5">
-          <span className="text-[15px] font-bold tracking-[0.18em] text-ink">LUMEN</span>
-          <span className="eyebrow text-accent-ink">Régie</span>
+        <div className="flex h-14 shrink-0 items-center border-b border-line px-5">
+          <span className="flex items-baseline gap-2">
+            <span className="text-[15px] font-bold tracking-[0.18em] text-ink">LUMEN</span>
+            <span className="eyebrow text-accent-ink">Régie</span>
+          </span>
         </div>
 
         <nav className="flex flex-col py-3">
