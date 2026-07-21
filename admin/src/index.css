@@ -1,8 +1,6 @@
 @import 'tailwindcss';
 
-/* Design system admin « régie » : une surface continue, réglée par des filets. */
 @theme {
-  /* Console en registre clair : la feuille est blanche, le châssis légèrement teinté. */
   --color-canvas: #eceff3;
   --color-bg: #ffffff;
   --color-panel: #f3f5f8;
@@ -22,9 +20,7 @@
   --radius-chip: 2px;
 }
 
-/* Valeurs référencées en style/attribut inline (séries dataviz, chrome des graphes) */
 :root {
-  /* Rampe ordinale des offres (Gratuit → Premium) : une seule teinte, validée sur fond blanc */
   --plan-1: #74a9db;
   --plan-2: #2f74ba;
   --plan-3: #123b68;
@@ -53,7 +49,6 @@ body {
 }
 
 @layer components {
-  /* Micro-libellé technique : capitales, très interlettré */
   .eyebrow {
     font-size: 10px;
     font-weight: 600;
@@ -62,7 +57,6 @@ body {
     text-transform: uppercase;
     color: var(--color-muted);
   }
-  /* Cadence du témoin de flux, en tête de rail */
   .pulse {
     animation: pulse 2.4s ease-in-out infinite;
   }

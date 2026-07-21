@@ -63,7 +63,7 @@ Endpoints : `/api/videos` (`?category=`), `/api/videos/:id`, `/api/videos/catego
 ## Conventions
 
 - TypeScript strict, ESM (imports backend relatifs en `.js`).
-- Commentaires rares, uniquement sur la logique non évidente.
+- Pas de commentaires : le code se lit seul (nommage explicite, fonctions courtes).
 - Commits fréquents et granulaires, style `(feat) add home header`, `(fix) ...`, `(chore) ...`.
 - Pas de secret en dur (variables d'environnement).
 - Responsive desktop + mobile sur les deux fronts.

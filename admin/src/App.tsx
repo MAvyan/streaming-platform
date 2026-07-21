@@ -36,7 +36,6 @@ function App() {
       value: byPlan.find((p) => p.plan === plan)?.users ?? 0,
     }))
 
-    // Mesures dérivées des mêmes séries : elles donnent l'échelle sans inventer de tendance.
     const premiumShare = overview.totalUsers
       ? Math.round(((plans[2]?.value ?? 0) / overview.totalUsers) * 100)
       : 0

@@ -1,7 +1,6 @@
 import type { CategoryStat } from '../../lib/api'
 import { fullNumber } from '../../lib/format'
 
-/** Une seule mesure sur des catégories nominales : une seule couleur, tri par valeur. */
 export function BarChart({ data }: { data: CategoryStat[] }) {
   if (data.length === 0) return null
 

@@ -1,7 +1,6 @@
 type Props = {
   label: string
   value: string
-  /** Mesure dérivée des mêmes données, pour donner l'échelle du chiffre principal. */
   detail?: string
 }
 

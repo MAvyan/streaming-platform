@@ -22,8 +22,6 @@ export function LineChart({ data }: { data: TimePoint[] }) {
   const box = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(900)
 
-  // Le SVG est tracé à l'échelle 1:1 : les libellés gardent leur taille réelle
-  // quelle que soit la largeur de l'écran.
   useEffect(() => {
     const el = box.current
     if (!el || typeof ResizeObserver === 'undefined') return
@@ -89,7 +87,6 @@ export function LineChart({ data }: { data: TimePoint[] }) {
           strokeLinecap="round"
         />
 
-        {/* Repère de moyenne : une référence, pas une série — d'où la couleur signal */}
         <line
           x1={PAD.left}
           x2={W - PAD.right}
@@ -108,7 +105,6 @@ export function LineChart({ data }: { data: TimePoint[] }) {
           moy. {compact(Math.round(avg))}
         </text>
 
-        {/* Seul le pic est étiqueté : l'axe et le survol portent le reste */}
         <circle
           cx={x(peak)}
           cy={y(data[peak].views)}

@@ -3,10 +3,6 @@ import { fullNumber } from '../../lib/format'
 
 export type PlanDatum = { label: string; value: number; color: string }
 
-/**
- * Répartition part-à-tout sur trois offres ordonnées : une barre empilée se lit
- * plus vite qu'un anneau, et garde les proportions comparables entre elles.
- */
 export function PlanSplit({ data }: { data: PlanDatum[] }) {
   const total = data.reduce((s, d) => s + d.value, 0) || 1
 
