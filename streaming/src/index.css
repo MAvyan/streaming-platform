@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 
-/* Design system Lumen → tokens Tailwind (bg-bg, text-accent, font-sans…) */
 @theme {
   --color-bg: #0c0c0e;
   --color-bg-90: rgba(12, 12, 14, 0.82);
@@ -21,7 +20,6 @@
   --radius-btn: 6px;
 }
 
-/* Teintes de genre (posters sans image / placeholder) — utilisées en style inline */
 :root {
   --tint-blue: #3d4a5c;
   --tint-teal: #3d565c;
@@ -46,7 +44,6 @@ body {
   color: var(--color-on-accent);
 }
 
-/* Cas non triviaux gardés en CSS global (dégradés, scrims, animations) */
 @layer components {
   .hero-scrim {
     background:
@@ -73,7 +70,6 @@ body {
     scrollbar-width: none;
   }
 
-  /* Pistes de carrousel : nombre de colonnes visibles selon la largeur */
   .row-track {
     display: grid;
     grid-auto-flow: column;

@@ -4,7 +4,6 @@ export function formatDuration(totalSec: number): string {
   return h > 0 ? `${h}h ${m.toString().padStart(2, '0')}` : `${m} min`
 }
 
-// Note de correspondance factice mais stable par vidéo, pour l'ambiance "recommandé".
 export function matchScore(id: string): number {
   const sum = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0)
   return 70 + (sum % 30)
