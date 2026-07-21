@@ -10,6 +10,7 @@ type Props = {
   search: string
   onSearch: (value: string) => void
   onHome: () => void
+  profileActive: boolean
 }
 
 export function Navbar({
@@ -19,6 +20,7 @@ export function Navbar({
   search,
   onSearch,
   onHome,
+  profileActive,
 }: Props) {
   const [scrolled, setScrolled] = useState(false)
 
@@ -59,10 +61,14 @@ export function Navbar({
         <button className="flex border-0 bg-transparent text-ink cursor-pointer" aria-label="Notifications">
           <Icon name="bell" size={22} />
         </button>
-        <span
-          className="inline-block h-8 w-8 rounded"
+        <a
+          href="#/profil"
+          aria-label="Mon profil"
+          aria-current={profileActive ? 'page' : undefined}
+          className={`inline-block h-8 w-8 rounded transition-shadow ${
+            profileActive ? 'ring-2 ring-ink ring-offset-2 ring-offset-bg' : 'hover:brightness-110'
+          }`}
           style={{ background: 'linear-gradient(135deg, var(--color-accent), #a8791d)' }}
-          aria-hidden="true"
         />
       </div>
     </header>

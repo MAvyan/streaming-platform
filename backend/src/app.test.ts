@@ -11,7 +11,7 @@ const { prismaMock } = vi.hoisted(() => ({
       update: vi.fn(),
       delete: vi.fn(),
     },
-    user: { count: vi.fn(), groupBy: vi.fn() },
+    user: { count: vi.fn(), groupBy: vi.fn(), findFirst: vi.fn() },
     viewEvent: { count: vi.fn(), aggregate: vi.fn(), groupBy: vi.fn(), findMany: vi.fn() },
   },
 }))
@@ -167,6 +167,76 @@ describe('écriture du catalogue', () => {
     const res = await request(app).delete('/api/videos/x')
     expect(res.status).toBe(404)
     expect(prismaMock.video.delete).not.toHaveBeenCalled()
+  })
+})
+
+describe('/api/users/me', () => {
+  const user = {
+    id: 'u1',
+    name: 'Utilisateur 1',
+    email: 'user1@example.com',
+    plan: 'PREMIUM',
+    country: 'FR',
+    createdAt: new Date('2026-01-05T10:00:00Z'),
+  }
+
+  it('renvoie le profil et ses compteurs de visionnage', async () => {
+    prismaMock.user.findFirst.mockResolvedValue(user)
+    prismaMock.viewEvent.findMany.mockResolvedValue([
+      { videoId: 'v1', watchedSec: 3600, completed: true },
+      { videoId: 'v1', watchedSec: 1800, completed: false },
+      { videoId: 'v2', watchedSec: 1800, completed: false },
+    ])
+
+    const res = await request(app).get('/api/users/me')
+    expect(res.status).toBe(200)
+    expect(res.body.email).toBe('user1@example.com')
+    expect(res.body.stats).toEqual({ views: 3, titles: 2, completed: 1, watchHours: 2 })
+  })
+
+  it('renvoie 404 quand la base ne contient aucun abonné', async () => {
+    prismaMock.user.findFirst.mockResolvedValue(null)
+    const res = await request(app).get('/api/users/me')
+    expect(res.status).toBe(404)
+  })
+
+  it('aplatit l historique avec la vidéo associée', async () => {
+    prismaMock.user.findFirst.mockResolvedValue(user)
+    prismaMock.viewEvent.findMany.mockResolvedValue([
+      {
+        id: 'e1',
+        videoId: 'v1',
+        watchedSec: 900,
+        completed: false,
+        createdAt: new Date('2026-07-20T20:00:00Z'),
+        video: {
+          title: 'Le Témoin',
+          category: 'Thriller',
+          thumbnailUrl: null,
+          backdropUrl: null,
+          durationSec: 4320,
+        },
+      },
+    ])
+
+    const res = await request(app).get('/api/users/me/history')
+    expect(res.status).toBe(200)
+    expect(res.body[0]).toMatchObject({
+      videoId: 'v1',
+      title: 'Le Témoin',
+      category: 'Thriller',
+      watchedSec: 900,
+      durationSec: 4320,
+    })
+  })
+
+  it('limite l historique aux visionnages les plus récents', async () => {
+    prismaMock.user.findFirst.mockResolvedValue(user)
+    prismaMock.viewEvent.findMany.mockResolvedValue([])
+    await request(app).get('/api/users/me/history')
+    expect(prismaMock.viewEvent.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ orderBy: { createdAt: 'desc' }, take: 12 }),
+    )
   })
 })
 

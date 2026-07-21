@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useCatalog, groupByCategory } from './hooks/useCatalog'
-import { useTitleRoute } from './hooks/useHashRoute'
+import { useSection, useTitleRoute } from './hooks/useHashRoute'
 import type { Video } from './lib/api'
 import { Navbar } from './design-system/organisms/Navbar'
 import { Hero } from './design-system/organisms/Hero'
@@ -8,10 +8,12 @@ import { Carousel } from './design-system/organisms/Carousel'
 import { VideoGrid } from './design-system/organisms/VideoGrid'
 import { DetailModal } from './design-system/organisms/DetailModal'
 import { BrowseTemplate } from './design-system/templates/BrowseTemplate'
+import { Profile } from './pages/Profile'
 
 function App() {
   const { videos, categories, loading, error } = useCatalog()
   const { titleId, openTitle, closeTitle } = useTitleRoute()
+  const section = useSection()
 
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -32,9 +34,14 @@ function App() {
     openTitle(video.id)
   }
 
+  const goBrowse = () => {
+    if (section === 'profile') window.location.hash = '#/'
+  }
+
   const goHome = () => {
     setActiveCategory(null)
     setSearch('')
+    goBrowse()
   }
 
   const rows = useMemo(() => groupByCategory(videos), [videos])
@@ -56,15 +63,22 @@ function App() {
       onSelectCategory={(c) => {
         setActiveCategory(c)
         setSearch('')
+        goBrowse()
       }}
       search={search}
-      onSearch={setSearch}
+      onSearch={(value) => {
+        setSearch(value)
+        if (value.trim()) goBrowse()
+      }}
       onHome={goHome}
+      profileActive={section === 'profile'}
     />
   )
 
   let content
-  if (error) {
+  if (section === 'profile') {
+    content = <Profile onOpen={openTitle} />
+  } else if (error) {
     content = <p className="px-[var(--page-x)] pt-[136px] text-center text-muted">Contenu indisponible ({error}).</p>
   } else if (loading) {
     content = <p className="px-[var(--page-x)] pt-[136px] text-center text-muted">Chargement du catalogue…</p>

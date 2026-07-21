@@ -5,6 +5,24 @@ function parse(hash: string): string | null {
   return match ? decodeURIComponent(match[1]) : null
 }
 
+export type Section = 'browse' | 'profile'
+
+function parseSection(hash: string): Section {
+  return hash.startsWith('#/profil') ? 'profile' : 'browse'
+}
+
+export function useSection(): Section {
+  const [section, setSection] = useState<Section>(() => parseSection(window.location.hash))
+
+  useEffect(() => {
+    const onChange = () => setSection(parseSection(window.location.hash))
+    window.addEventListener('hashchange', onChange)
+    return () => window.removeEventListener('hashchange', onChange)
+  }, [])
+
+  return section
+}
+
 export function useTitleRoute() {
   const [titleId, setTitleId] = useState<string | null>(() => parse(window.location.hash))
 
