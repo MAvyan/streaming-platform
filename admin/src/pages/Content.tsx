@@ -1,13 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useVideos } from '../hooks/useVideos'
 import { api, type Video } from '../lib/api'
+import { paginate } from '../lib/paginate'
 import { Button } from '../design-system/atoms/Button'
 import { Input, Select } from '../design-system/atoms/Input'
 import { Notice } from '../design-system/molecules/Notice'
 import { Panel } from '../design-system/molecules/Panel'
+import { Pagination } from '../design-system/molecules/Pagination'
 import { ConfirmDialog } from '../design-system/molecules/ConfirmDialog'
 import { VideoTable } from '../design-system/organisms/VideoTable'
 import { VideoForm } from '../design-system/organisms/VideoForm'
+
+const PAGE_SIZE = 15
 
 export function Content() {
   const { videos, loading, error, reload } = useVideos()
@@ -18,6 +22,7 @@ export function Content() {
   const [pendingDelete, setPendingDelete] = useState<Video | null>(null)
   const [deleting, setDeleting] = useState(false)
   const [status, setStatus] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
 
   const categories = useMemo(
     () => [...new Set(videos.map((v) => v.category))].sort((a, b) => a.localeCompare(b)),
@@ -32,6 +37,12 @@ export function Content() {
         (needle === '' || v.title.toLowerCase().includes(needle)),
     )
   }, [videos, search, category])
+
+  useEffect(() => {
+    setPage(1)
+  }, [search, category])
+
+  const current = paginate(filtered, page, PAGE_SIZE)
 
   async function confirmDelete() {
     if (!pendingDelete) return
@@ -122,7 +133,18 @@ export function Content() {
             </Button>
           </div>
         ) : (
-          <VideoTable videos={filtered} onEdit={setEditing} onDelete={setPendingDelete} />
+          <>
+            <VideoTable videos={current.items} onEdit={setEditing} onDelete={setPendingDelete} />
+            <Pagination
+              page={current.page}
+              pageCount={current.pageCount}
+              from={current.from}
+              to={current.to}
+              total={current.total}
+              unit="titres"
+              onChange={setPage}
+            />
+          </>
         )}
       </Panel>
 

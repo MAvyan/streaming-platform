@@ -12,7 +12,7 @@ const tones = {
 export function Badge({ children, tone = 'neutral' }: Props) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-chip border px-1.5 py-0.5 text-[10px] uppercase tracking-[0.08em] leading-normal ${tones[tone]}`}
+      className={`inline-flex items-center gap-1 whitespace-nowrap rounded-chip border px-1.5 py-0.5 text-[10px] uppercase tracking-[0.08em] leading-normal ${tones[tone]}`}
     >
       {children}
     </span>
