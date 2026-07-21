@@ -11,3 +11,10 @@ export function shortDate(iso: string): string {
   const d = new Date(iso)
   return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
 }
+
+export function duration(totalSec: number): string {
+  const minutes = Math.round(totalSec / 60)
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  return h > 0 ? `${h} h ${m.toString().padStart(2, '0')}` : `${m} min`
+}

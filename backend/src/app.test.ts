@@ -3,7 +3,14 @@ import request from 'supertest'
 
 const { prismaMock } = vi.hoisted(() => ({
   prismaMock: {
-    video: { findMany: vi.fn(), findUnique: vi.fn(), count: vi.fn() },
+    video: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      count: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
     user: { count: vi.fn(), groupBy: vi.fn() },
     viewEvent: { count: vi.fn(), aggregate: vi.fn(), groupBy: vi.fn(), findMany: vi.fn() },
   },
@@ -59,6 +66,107 @@ describe('/api/videos', () => {
     prismaMock.video.findUnique.mockResolvedValue(null)
     const res = await request(app).get('/api/videos/x')
     expect(res.status).toBe(404)
+  })
+})
+
+const validVideo = {
+  title: 'Nouveau titre',
+  description: 'Une description.',
+  category: 'Drame',
+  durationSec: 5400,
+  releaseYear: 2024,
+  maturity: '-12',
+}
+
+describe('écriture du catalogue', () => {
+  it('crée une vidéo et renvoie 201', async () => {
+    prismaMock.video.create.mockResolvedValue({ id: 'v1', ...validVideo })
+    const res = await request(app).post('/api/videos').send(validVideo)
+    expect(res.status).toBe(201)
+    expect(res.body.id).toBe('v1')
+    expect(prismaMock.video.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ title: 'Nouveau titre', durationSec: 5400 }),
+    })
+  })
+
+  it('refuse une création incomplète avec le détail par champ', async () => {
+    const res = await request(app).post('/api/videos').send({ title: '  ' })
+    expect(res.status).toBe(400)
+    expect(Object.keys(res.body.errors).sort()).toEqual([
+      'category',
+      'description',
+      'durationSec',
+      'maturity',
+      'releaseYear',
+      'title',
+    ])
+    expect(prismaMock.video.create).not.toHaveBeenCalled()
+  })
+
+  it('refuse une année ou un public hors bornes', async () => {
+    const res = await request(app)
+      .post('/api/videos')
+      .send({ ...validVideo, releaseYear: 1789, maturity: 'X' })
+    expect(res.status).toBe(400)
+    expect(res.body.errors.releaseYear).toBeDefined()
+    expect(res.body.errors.maturity).toBeDefined()
+  })
+
+  it('refuse une URL de visuel malformée', async () => {
+    const res = await request(app)
+      .post('/api/videos')
+      .send({ ...validVideo, thumbnailUrl: 'javascript:alert(1)' })
+    expect(res.status).toBe(400)
+    expect(res.body.errors.thumbnailUrl).toBeDefined()
+  })
+
+  it('vide un visuel quand la chaîne est vide', async () => {
+    prismaMock.video.create.mockResolvedValue({ id: 'v1' })
+    await request(app)
+      .post('/api/videos')
+      .send({ ...validVideo, thumbnailUrl: '' })
+    expect(prismaMock.video.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ thumbnailUrl: null }),
+    })
+  })
+
+  it('met à jour uniquement les champs fournis', async () => {
+    prismaMock.video.findUnique.mockResolvedValue({ id: 'v1' })
+    prismaMock.video.update.mockResolvedValue({ id: 'v1', title: 'Corrigé' })
+    const res = await request(app).patch('/api/videos/v1').send({ title: 'Corrigé' })
+    expect(res.status).toBe(200)
+    expect(prismaMock.video.update).toHaveBeenCalledWith({
+      where: { id: 'v1' },
+      data: { title: 'Corrigé' },
+    })
+  })
+
+  it('refuse une mise à jour vide', async () => {
+    const res = await request(app).patch('/api/videos/v1').send({})
+    expect(res.status).toBe(400)
+    expect(prismaMock.video.update).not.toHaveBeenCalled()
+  })
+
+  it('renvoie 404 en mise à jour d une vidéo inconnue', async () => {
+    prismaMock.video.findUnique.mockResolvedValue(null)
+    const res = await request(app).patch('/api/videos/x').send({ title: 'Corrigé' })
+    expect(res.status).toBe(404)
+    expect(prismaMock.video.update).not.toHaveBeenCalled()
+  })
+
+  it('supprime une vidéo et renvoie 204', async () => {
+    prismaMock.video.findUnique.mockResolvedValue({ id: 'v1' })
+    prismaMock.video.delete.mockResolvedValue({ id: 'v1' })
+    const res = await request(app).delete('/api/videos/v1')
+    expect(res.status).toBe(204)
+    expect(prismaMock.video.delete).toHaveBeenCalledWith({ where: { id: 'v1' } })
+  })
+
+  it('renvoie 404 en suppression d une vidéo inconnue', async () => {
+    prismaMock.video.findUnique.mockResolvedValue(null)
+    const res = await request(app).delete('/api/videos/x')
+    expect(res.status).toBe(404)
+    expect(prismaMock.video.delete).not.toHaveBeenCalled()
   })
 })
 

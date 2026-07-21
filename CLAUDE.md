@@ -7,7 +7,8 @@ Guide de travail sur ce dépôt. Lu au démarrage de chaque session.
 Plateforme de streaming (LUMEN) : deux interfaces React + une API.
 
 - **`streaming/`** — interface grand public de consultation de contenu vidéo. Design inspiré des plateformes de streaming (Netflix-like).
-- **`admin/`** — dashboard de suivi d'activité (KPIs, graphiques, tableaux).
+- **`admin/`** — régie : suivi d'activité (KPIs, graphiques) et gestion du catalogue (CRUD).
+  Routage par hash maison (`hooks/useRoute.ts`) : `#/` vue d'ensemble, `#/contenus` catalogue.
 - **`backend/`** — API REST servant des données simulées aux deux fronts.
 
 ## Parti-pris front
@@ -59,6 +60,10 @@ Hors Docker : `npm install && npm run dev` dans chaque projet (le backend requie
 
 Endpoints : `/api/videos` (`?category=`), `/api/videos/:id`, `/api/videos/categories`,
 `/api/stats/overview|top-videos|by-category|by-plan|views-over-time`.
+
+Écriture du catalogue : `POST /api/videos`, `PATCH /api/videos/:id`, `DELETE /api/videos/:id`.
+Validation maison dans `routes/videos.ts` → `400 { errors: { champ: message } }`, que le
+formulaire admin réaffiche champ par champ. Vocabulaire `maturity` : `TP`, `-10`, `-12`, `-16`, `-18`.
 
 ## Conventions
 

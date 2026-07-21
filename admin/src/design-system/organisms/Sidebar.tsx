@@ -1,10 +1,8 @@
-type Item = { key: string; label: string }
+type Item = { key: string; label: string; href: string }
 
 const ITEMS: Item[] = [
-  { key: 'overview', label: "Vue d'ensemble" },
-  { key: 'audience', label: 'Audience' },
-  { key: 'content', label: 'Contenus' },
-  { key: 'watch', label: 'Temps de visionnage' },
+  { key: 'overview', label: "Vue d'ensemble", href: '#/' },
+  { key: 'content', label: 'Contenus', href: '#/contenus' },
 ]
 
 type Props = {
@@ -17,7 +15,7 @@ export function Sidebar({ active, open, onClose }: Props) {
   return (
     <>
       {open && (
-        <div className="fixed inset-0 z-[39] hidden bg-black/60 max-[860px]:block" onClick={onClose} />
+        <div className="fixed inset-0 z-[39] hidden bg-ink/25 max-[860px]:block" onClick={onClose} />
       )}
       <aside
         className={`fixed inset-y-0 left-0 z-40 flex w-[212px] flex-col border-r border-line bg-canvas max-[860px]:transition-transform ${
@@ -33,16 +31,18 @@ export function Sidebar({ active, open, onClose }: Props) {
           {ITEMS.map((item) => {
             const current = active === item.key
             return (
-              <button
+              <a
                 key={item.key}
+                href={item.href}
+                onClick={onClose}
                 aria-current={current ? 'page' : undefined}
-                className={`relative cursor-pointer border-0 bg-transparent px-5 py-2.5 text-left font-sans text-sm transition-colors ${
+                className={`relative px-5 py-2.5 text-sm no-underline transition-colors ${
                   current ? 'font-medium text-ink' : 'text-secondary hover:text-ink'
                 }`}
               >
                 {current && <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[2px] bg-accent" />}
                 {item.label}
-              </button>
+              </a>
             )
           })}
         </nav>

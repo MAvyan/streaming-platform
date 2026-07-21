@@ -1,12 +1,14 @@
+import type { ReactNode } from 'react'
 import { Icon } from '../atoms/Icon'
 
 type Props = {
   title: string
   subtitle?: string
+  action?: ReactNode
   onMenu: () => void
 }
 
-export function Topbar({ title, subtitle, onMenu }: Props) {
+export function Topbar({ title, subtitle, action, onMenu }: Props) {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-line bg-bg/95 px-8 backdrop-blur max-[860px]:px-4">
       <button
@@ -25,9 +27,7 @@ export function Topbar({ title, subtitle, onMenu }: Props) {
         </>
       )}
 
-      <span className="eyebrow ml-auto shrink-0 border border-line px-2.5 py-1.5 text-secondary">
-        30 derniers jours
-      </span>
+      {action && <div className="ml-auto">{action}</div>}
     </header>
   )
 }
