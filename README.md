@@ -133,6 +133,55 @@ base de production existerait.
 API. L'effort porte sur la logique qui peut casser en silence : validation des écritures,
 pagination et bornes, formatage, contrat des appels réseau.
 
+## Perspectives d'évolution
+
+### Livraison continue
+
+La CI s'arrête à la validation. Le prolongement naturel, dans l'ordre où il faudrait le traiter :
+
+1. **Migrations versionnées d'abord.** Tant que le schéma est appliqué par `prisma db push`,
+   aucun déploiement automatique n'est sûr : un champ renommé efface des données. Passer à
+   `prisma migrate` et exécuter `prisma migrate deploy` avant la mise en ligne est le préalable
+   à tout le reste.
+2. **Publication d'images.** Un job `release` après `quality` : build des trois images Docker,
+   tag par SHA de commit (et par version sur un tag `v*`), publication sur GitHub Container
+   Registry avec cache de couches entre exécutions.
+3. **Deux environnements.** Préproduction déployée à chaque merge sur `main`, production
+   déclenchée par un tag et protégée par un *environment* GitHub avec approbation manuelle.
+   Les secrets (`DATABASE_URL` en tête) vivent dans l'environnement, jamais dans les images.
+4. **Vérification et retour arrière.** `/health` est déjà exposé : le déploiement peut attendre
+   une réponse saine avant de basculer le trafic, et le retour arrière consiste à redéployer le
+   tag précédent, puisque les images sont immuables.
+
+Côté qualité, quelques ajouts utiles avant d'ouvrir la porte à la production : un seuil minimal
+de couverture, des tests d'intégration API contre une vraie base Postgres (service du workflow),
+des tests de bout en bout sur les parcours clés (recherche, CRUD d'un titre, profil), un scan de
+vulnérabilités des dépendances et des images, et Dependabot pour ne pas dériver.
+
+### Sécuriser les écritures
+
+Limitation connue et assumée à ce stade : **les routes d'écriture du catalogue ne sont pas
+protégées**, et `/api/users/me` renvoie le premier abonné du seed faute d'authentification.
+Avant tout déploiement réel, il faut une authentification (session ou JWT), des rôles
+(`admin` pour les écritures) et une limitation de débit sur les endpoints de mutation.
+
+### Fonctionnalités envisagées
+
+**Streaming** — comptes et profils multiples, « Ma liste » de favoris, reprise de lecture réelle
+(le lecteur enregistrerait un `ViewEvent` plutôt que de simuler), recommandations déduites de
+l'historique par catégorie, contrôle parental appuyé sur le champ `maturity` déjà présent,
+chargement progressif du catalogue et images responsives.
+
+**Admin** — les pages Audience et Temps de visionnage, retirées du menu tant qu'elles n'existent
+pas ; un sélecteur de période sur la vue d'ensemble, aujourd'hui figée sur 30 jours ; tri des
+colonnes et actions groupées sur le catalogue ; téléversement d'image plutôt qu'une URL à coller ;
+export CSV et journal des modifications.
+
+**API** — pagination côté serveur (`?page`, `?limit`) : elle est actuellement calculée dans le
+navigateur, ce qui tient pour quelques dizaines de titres mais pas au-delà ; mise en cache
+conditionnelle (`ETag`) sur le catalogue ; et des statistiques calculées par requêtes SQL
+agrégées plutôt qu'en mémoire, quand le volume de visionnages augmentera.
+
 ## Structure
 
 ```
