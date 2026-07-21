@@ -20,7 +20,12 @@ Plateforme de streaming (LUMEN) : deux interfaces React + une API.
   Pas de `.css` par composant : un seul `index.css` par app (theme + quelques cas non triviaux :
   dégradés/scrims, keyframes, colonnes de carrousel, variables de séries dataviz).
 - Streaming : design "Lumen" (fond `#0c0c0e`, accent or `#f2c74c`, Hanken Grotesk).
-  Admin : registre outil sobre (accent bleu `#3987e5`).
+- Admin : registre "régie", console en mode jour (châssis `#eceff3`, feuille blanche,
+  accent bleu `#2f74ba`, Montserrat). Pas de cartes : une surface continue découpée par
+  des filets d'1 px (`gap-px` sur fond `bg-line`), micro-libellés `.eyebrow` en capitales.
+- Dataviz admin : une seule teinte par graphe (jamais d'arc-en-ciel sur des catégories),
+  rampe ordinale `--plan-1..3` pour les offres, `--reference` réservé aux repères (moyenne).
+  Aucune métrique inventée : les mesures secondaires sont dérivées des séries de l'API.
 
 ## Architecture
 

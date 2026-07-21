@@ -1,42 +1,80 @@
 @import 'tailwindcss';
 
-/* Design system admin (registre outil sobre) → tokens Tailwind */
+/* Design system admin « régie » : une surface continue, réglée par des filets. */
 @theme {
-  --color-bg: #0e0f12;
-  --color-surface: #17181b;
-  --color-surface-2: #1e2024;
-  --color-surface-3: #262930;
-  --color-line: rgba(255, 255, 255, 0.1);
-  --color-line-strong: rgba(255, 255, 255, 0.16);
-  --color-ink: #f2f3f5;
-  --color-secondary: #b9bcc2;
-  --color-muted: #7d8288;
-  --color-accent: #3987e5;
-  --color-good: #0ca30c;
-  --color-critical: #d03b3b;
+  /* Console en registre clair : la feuille est blanche, le châssis légèrement teinté. */
+  --color-canvas: #eceff3;
+  --color-bg: #ffffff;
+  --color-panel: #f3f5f8;
+  --color-line: rgba(18, 27, 38, 0.13);
+  --color-line-strong: rgba(18, 27, 38, 0.3);
+  --color-ink: #131920;
+  --color-secondary: #4b5560;
+  --color-muted: #737d88;
+  --color-accent: #2f74ba;
+  --color-accent-ink: #1d5794;
+  --color-signal: #9a6f10;
+  --color-good: #1a7f4b;
+  --color-critical: #c33b3b;
 
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-sans: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --radius-card: 10px;
+  --radius-chip: 2px;
 }
 
 /* Valeurs référencées en style/attribut inline (séries dataviz, chrome des graphes) */
 :root {
-  --accent-soft: rgba(57, 135, 229, 0.14);
-  --series-1: #3987e5;
-  --series-2: #199e70;
-  --series-3: #c98500;
-  --series-4: #008300;
-  --series-5: #9085e9;
-  --series-6: #e66767;
-  --gridline: #2c2c2a;
-  color-scheme: dark;
+  /* Rampe ordinale des offres (Gratuit → Premium) : une seule teinte, validée sur fond blanc */
+  --plan-1: #74a9db;
+  --plan-2: #2f74ba;
+  --plan-3: #123b68;
+  --series-main: #2f74ba;
+  --series-track: rgba(18, 27, 38, 0.08);
+  --reference: #9a6f10;
+  --gridline: rgba(18, 27, 38, 0.1);
+  color-scheme: light;
 }
 
 body {
-  background: var(--color-bg);
+  background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-ink);
+  outline-offset: 2px;
+}
+
+@layer components {
+  /* Micro-libellé technique : capitales, très interlettré */
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  /* Cadence du témoin de flux, en tête de rail */
+  .pulse {
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
 }

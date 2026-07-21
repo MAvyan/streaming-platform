@@ -1,58 +1,37 @@
 import type { CategoryStat } from '../../lib/api'
 import { fullNumber } from '../../lib/format'
 
-const SERIES = [
-  'var(--series-1)',
-  'var(--series-2)',
-  'var(--series-3)',
-  'var(--series-4)',
-  'var(--series-5)',
-  'var(--series-6)',
-]
-
-const W = 560
-const ROW_H = 44
-const BAR_H = 22
-const LABEL_W = 120
-const VALUE_W = 52
-
-const labelStyle = { fill: 'var(--color-secondary)', fontSize: 13, fontFamily: 'var(--font-sans)' }
-const valueStyle = { fill: 'var(--color-ink)', fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-mono)' }
-
+/** Une seule mesure sur des catégories nominales : une seule couleur, tri par valeur. */
 export function BarChart({ data }: { data: CategoryStat[] }) {
   if (data.length === 0) return null
 
-  const max = Math.max(...data.map((d) => d.views), 1)
-  const trackW = W - LABEL_W - VALUE_W
-  const H = data.length * ROW_H
+  const rows = [...data].sort((a, b) => b.views - a.views)
+  const max = Math.max(...rows.map((d) => d.views), 1)
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label="Visionnages par catégorie">
-      {data.map((d, i) => {
-        const y = i * ROW_H + (ROW_H - BAR_H) / 2
-        const w = Math.max(2, (d.views / max) * trackW)
-        return (
-          <g key={d.category} className="group">
-            <title>{`${d.category} : ${fullNumber(d.views)} visionnages`}</title>
-            <text x="0" y={i * ROW_H + ROW_H / 2} dy="0.32em" style={labelStyle}>
-              {d.category}
-            </text>
-            <rect x={LABEL_W} y={y} width={trackW} height={BAR_H} rx="4" fill="var(--color-surface-2)" />
-            <rect
-              x={LABEL_W}
-              y={y}
-              width={w}
-              height={BAR_H}
-              rx="4"
-              fill={SERIES[i % SERIES.length]}
-              className="transition-opacity group-hover:opacity-85"
+    <ul className="flex flex-col">
+      {rows.map((d) => (
+        <li
+          key={d.category}
+          title={`${d.category} : ${fullNumber(d.views)} visionnages`}
+          className="group grid grid-cols-[minmax(80px,124px)_1fr_auto] items-center gap-4 py-2.5"
+        >
+          <span className="truncate text-[13px] text-secondary">{d.category}</span>
+          <span
+            className="h-3 w-full rounded-chip"
+            style={{ background: 'var(--series-track)' }}
+            aria-hidden="true"
+          >
+            <span
+              className="block h-full rounded-chip transition-opacity group-hover:opacity-80"
+              style={{ background: 'var(--series-main)', width: `${Math.max((d.views / max) * 100, 1)}%` }}
             />
-            <text x={W} y={i * ROW_H + ROW_H / 2} dy="0.32em" textAnchor="end" style={valueStyle}>
-              {fullNumber(d.views)}
-            </text>
-          </g>
-        )
-      })}
-    </svg>
+          </span>
+          <span className="w-[60px] text-right text-xs tabular-nums text-ink">
+            {fullNumber(d.views)}
+          </span>
+        </li>
+      ))}
+    </ul>
   )
 }
